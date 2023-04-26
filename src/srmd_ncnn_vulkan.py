@@ -128,14 +128,14 @@ class SRMD:
         channels = int(len(in_bytes) / (_image.width * _image.height))
         out_bytes = (self._scale ** 2) * len(in_bytes) * b"\x00"
 
-        self.raw_in_image = wrapped.Image(
+        self.raw_in_image = wrapped.SRMDImage(
             in_bytes,
             _image.width,
             _image.height,
             channels
         )
 
-        self.raw_out_image = wrapped.Image(
+        self.raw_out_image = wrapped.SRMDImage(
             out_bytes,
             self._scale * _image.width,
             self._scale * _image.height,
@@ -166,14 +166,14 @@ class SRMD:
         channels = int(len(in_bytes) / (_image.shape[1] * _image.shape[0]))
         out_bytes = (self._scale ** 2) * len(in_bytes) * b"\x00"
 
-        self.raw_in_image = wrapped.Image(
+        self.raw_in_image = wrapped.SRMDImage(
             in_bytes,
             _image.shape[1],
             _image.shape[0],
             channels
         )
 
-        self.raw_out_image = wrapped.Image(
+        self.raw_out_image = wrapped.SRMDImage(
             out_bytes,
             self._scale * _image.shape[1],
             self._scale * _image.shape[0],
@@ -204,14 +204,14 @@ class SRMD:
         :return: processed bytes image
         """
         if self.raw_in_image is None and self.raw_out_image is None:
-            self.raw_in_image = wrapped.Image(
+            self.raw_in_image = wrapped.SRMDImage(
                 _image_bytes,
                 width,
                 height,
                 channels
             )
 
-            self.raw_out_image = wrapped.Image(
+            self.raw_out_image = wrapped.SRMDImage(
                 (self._scale ** 2) * len(_image_bytes) * b"\x00",
                 self._scale * width,
                 self._scale * height,

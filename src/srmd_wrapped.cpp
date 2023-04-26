@@ -1,18 +1,18 @@
 #include "srmd_wrapped.h"
 
 // Image Data Structure
-Image::Image(std::string d, int w, int h, int c) {
+SRMDImage::SRMDImage(std::string d, int w, int h, int c) {
     this->d = std::move(d);
     this->w = w;
     this->h = h;
     this->c = c;
 }
 
-void Image::set_data(std::string data) {
+void SRMDImage::set_data(std::string data) {
     this->d = std::move(data);
 }
 
-pybind11::bytes Image::get_data() const {
+pybind11::bytes SRMDImage::get_data() const {
     return pybind11::bytes(this->d);
 }
 
@@ -61,7 +61,7 @@ int SRMDWrapped::load(const std::string &parampath,
 #endif
 }
 
-int SRMDWrapped::process(const Image &inimage, Image &outimage) const {
+int SRMDWrapped::process(const SRMDImage &inimage, SRMDImage &outimage) const {
     int c = inimage.c;
     ncnn::Mat inimagemat =
             ncnn::Mat(inimage.w, inimage.h, (void *) inimage.d.data(), (size_t) c, c);
@@ -81,10 +81,10 @@ PYBIND11_MODULE(srmd_ncnn_vulkan_wrapper, m) {
             .def("process", &SRMDWrapped::process)
             .def("set_parameters", &SRMDWrapped::set_parameters);
 
-    pybind11::class_<Image>(m, "Image")
+    pybind11::class_<SRMDImage>(m, "SRMDImage")
             .def(pybind11::init<std::string, int, int, int>())
-            .def("get_data", &Image::get_data)
-            .def("set_data", &Image::set_data);
+            .def("get_data", &SRMDImage::get_data)
+            .def("set_data", &SRMDImage::set_data);
 
     m.def("get_gpu_count", &get_gpu_count);
 

@@ -9,14 +9,14 @@
 #include <iostream>
 
 // wrapper class of ncnn::Mat
-class Image {
+class SRMDImage {
 public:
     std::string d;
     int w;
     int h;
     int c;
 
-    Image(std::string d, int w, int h, int c);
+    SRMDImage(std::string d, int w, int h, int c);
 
     void set_data(std::string data);
 
@@ -34,7 +34,7 @@ public:
 
     int load(const std::string &parampath, const std::string &modelpath);
 
-    int process(const Image &inimage, Image &outimage) const;
+    int process(const SRMDImage &inimage, SRMDImage &outimage) const;
 
 private:
     int gpuid;

@@ -42,7 +42,7 @@ Once the model is initialized, you can use the upscale method to super-resolve y
 
 ### Pillow
 ```python
-from pil import Image
+from PIL import Image
 srmd = SRMD(gpuid=0)
 with Image.open("input.jpg") as image:
     image = srmd.process_pil(image)

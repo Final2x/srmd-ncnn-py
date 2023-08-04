@@ -1,5 +1,7 @@
 # srmd-ncnn-py
-Python Binding for srmd-ncnn-py with PyBind11 [![PyPI version](https://badge.fury.io/py/srmd-ncnn-py.svg?123456)](https://badge.fury.io/py/srmd-ncnn-py?123456)  [![Release](https://github.com/Tohrusky/srmd-ncnn-py/actions/workflows/Release.yml/badge.svg)](https://github.com/Tohrusky/srmd-ncnn-py/actions/workflows/Release.yml)
+Python Binding for srmd-ncnn-py with PyBind11 
+
+[![PyPI version](https://badge.fury.io/py/srmd-ncnn-py.svg?123456)](https://badge.fury.io/py/srmd-ncnn-py?123456)  [![Release](https://github.com/Tohrusky/srmd-ncnn-py/actions/workflows/Release.yml/badge.svg)](https://github.com/Tohrusky/srmd-ncnn-py/actions/workflows/Release.yml)
 
 SRMD - Learning a Single Convolutional Super-Resolution Network for Multiple Degradations (CVPR, 2018).
 This wrapper provides an easy-to-use interface for running the pre-trained SRMD model.

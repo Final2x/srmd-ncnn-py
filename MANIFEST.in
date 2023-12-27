@@ -1,2 +1,0 @@
-recursive-include srmd_ncnn_py/models *
-recursive-include srmd_ncnn_py srmd_ncnn_vulkan_wrapper.*.*

@@ -21,40 +21,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-# 参考https://github.com/media2x/srmd-ncnn-vulkan-python，感谢原作者
+# 参考https://github.com/media2x/srmd-ncnn-vulkan-python, 感谢原作者
 
 import pathlib
-import time
-from PIL import Image
-import numpy as np
-import cv2
+from typing import Optional
 
-if __package__ or "." in __name__:
+import cv2
+import numpy as np
+from PIL import Image
+
+try:
     from . import srmd_ncnn_vulkan_wrapper as wrapped
-else:
+except ImportError:
     import srmd_ncnn_vulkan_wrapper as wrapped
 
 
 class SRMD:
-    """
-    :param gpuid: gpu device to use, must >= 0
-    :param tta_mode: enable test time argumentation
-    :param noise: denoise level, [-1, 10], default: 3
-    :param scale: upscale ratio, 2 or 3 or 4
-    :param tilesize: tile size, 0 for auto, must >= 32
-    :param model: SRMD model name, can be "models-srmd" or an absolute path to a model folder
-    """
-
     def __init__(
-            self,
-            gpuid: int = 0,
-            tta_mode: bool = False,
-            noise: int = 3,
-            scale: int = 2,
-            tilesize: int = 0,
-            model: str = "models-srmd",
-            **_kwargs,
+        self,
+        gpuid: int = 0,
+        tta_mode: bool = False,
+        noise: int = 3,
+        scale: int = 2,
+        tilesize: int = 0,
+        model: str = "models-srmd",
     ):
+        """
+        SRMD class for Super-Resolution
+
+        :param gpuid: gpu device to use, must >= 0
+        :param tta_mode: enable test time argumentation
+        :param noise: denoise level, [-1, 10], default: 3
+        :param scale: upscale ratio, 2 or 3 or 4
+        :param tilesize: tile size, 0 for auto, must >= 32
+        :param model: SRMD model name, can be "models-srmd" or an absolute path to a model folder
+        """
 
         # check arguments' validity
         assert gpuid >= 0, "gpuid must >= 0"
@@ -88,9 +89,7 @@ class SRMD:
 
         self._srmd_object.set_parameters(self._noise, self._scale, prepadding, self._tilesize)
 
-    def _load(
-            self, param_path: pathlib.Path = None, model_path: pathlib.Path = None
-    ) -> None:
+    def _load(self, param_path: Optional[pathlib.Path] = None, model_path: Optional[pathlib.Path] = None) -> None:
         """
         Load models from given paths. Use self._model if one or all of the parameters are not given.
 
@@ -126,14 +125,9 @@ class SRMD:
 
         in_bytes = _image.tobytes()
         channels = int(len(in_bytes) / (_image.width * _image.height))
-        out_bytes = (self._scale ** 2) * len(in_bytes) * b"\x00"
+        out_bytes = (self._scale**2) * len(in_bytes) * b"\x00"
 
-        self.raw_in_image = wrapped.SRMDImage(
-            in_bytes,
-            _image.width,
-            _image.height,
-            channels
-        )
+        self.raw_in_image = wrapped.SRMDImage(in_bytes, _image.width, _image.height, channels)
 
         self.raw_out_image = wrapped.SRMDImage(
             out_bytes,
@@ -164,14 +158,9 @@ class SRMD:
 
         in_bytes = _image.tobytes()
         channels = int(len(in_bytes) / (_image.shape[1] * _image.shape[0]))
-        out_bytes = (self._scale ** 2) * len(in_bytes) * b"\x00"
+        out_bytes = (self._scale**2) * len(in_bytes) * b"\x00"
 
-        self.raw_in_image = wrapped.SRMDImage(
-            in_bytes,
-            _image.shape[1],
-            _image.shape[0],
-            channels
-        )
+        self.raw_in_image = wrapped.SRMDImage(in_bytes, _image.shape[1], _image.shape[0], channels)
 
         self.raw_out_image = wrapped.SRMDImage(
             out_bytes,
@@ -182,13 +171,8 @@ class SRMD:
 
         self.process()
 
-        res = np.frombuffer(
-            self.raw_out_image.get_data(),
-            dtype=np.uint8
-        ).reshape(
-            self._scale * _image.shape[0],
-            self._scale * _image.shape[1],
-            channels
+        res = np.frombuffer(self.raw_out_image.get_data(), dtype=np.uint8).reshape(
+            self._scale * _image.shape[0], self._scale * _image.shape[1], channels
         )
 
         return cv2.cvtColor(res, cv2.COLOR_RGB2BGR)
@@ -204,15 +188,10 @@ class SRMD:
         :return: processed bytes image
         """
         if self.raw_in_image is None and self.raw_out_image is None:
-            self.raw_in_image = wrapped.SRMDImage(
-                _image_bytes,
-                width,
-                height,
-                channels
-            )
+            self.raw_in_image = wrapped.SRMDImage(_image_bytes, width, height, channels)
 
             self.raw_out_image = wrapped.SRMDImage(
-                (self._scale ** 2) * len(_image_bytes) * b"\x00",
+                (self._scale**2) * len(_image_bytes) * b"\x00",
                 self._scale * width,
                 self._scale * height,
                 channels,
@@ -223,25 +202,3 @@ class SRMD:
         self.process()
 
         return self.raw_out_image.get_data()
-
-
-if __name__ == "__main__":
-    srmd = SRMD(gpuid=0, scale=2)
-
-    time_start = time.time()
-
-    with Image.open("input.jpg") as image:
-        image = srmd.process_pil(image)
-        image.save("output.jpg", quality=95)
-
-    print(f"Time: {(time.time() - time_start) * 1000} ms")
-
-    # test cv2
-
-    time_start = time.time()
-
-    image = cv2.imdecode(np.fromfile("input.jpg", dtype=np.uint8), cv2.IMREAD_COLOR)
-    image = srmd.process_cv2(image)
-    cv2.imencode(".jpg", image)[1].tofile("output_cv2.jpg")
-
-    print(f"Time: {(time.time() - time_start) * 1000} ms")

@@ -10,19 +10,23 @@
 #include "gpu.h"
 #include "layer.h"
 
-class SRMD
-{
+class SRMD {
 public:
     SRMD(int gpuid, bool tta_mode = false);
+
     ~SRMD();
 
 #if _WIN32
     int load(const std::wstring& parampath, const std::wstring& modelpath);
 #else
-    int load(const std::string& parampath, const std::string& modelpath);
+
+    int load(const std::string &parampath, const std::string &modelpath);
+
 #endif
 
-    int process(const ncnn::Mat& inimage, ncnn::Mat& outimage) const;
+    int process(const ncnn::Mat &inimage, ncnn::Mat &outimage) const;
+
+    int process_cpu(const ncnn::Mat& inimage, ncnn::Mat& outimage) const
 
 public:
     // srmd parameters
@@ -32,13 +36,13 @@ public:
     int prepadding;
 
 private:
-    ncnn::VulkanDevice* vkdev;
+    ncnn::VulkanDevice *vkdev;
     ncnn::Net net;
-    ncnn::Pipeline* srmd_preproc;
-    ncnn::Pipeline* srmd_postproc;
-    ncnn::Layer* bicubic_2x;
-    ncnn::Layer* bicubic_3x;
-    ncnn::Layer* bicubic_4x;
+    ncnn::Pipeline *srmd_preproc;
+    ncnn::Pipeline *srmd_postproc;
+    ncnn::Layer *bicubic_2x;
+    ncnn::Layer *bicubic_3x;
+    ncnn::Layer *bicubic_4x;
     bool tta_mode;
 };
 

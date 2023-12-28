@@ -49,7 +49,7 @@ class SRMD:
         """
         SRMD class for Super-Resolution
 
-        :param gpuid: gpu device to use, must >= 0
+        :param gpuid: gpu device to use, must >= -1, -1 for cpu
         :param tta_mode: enable test time argumentation
         :param noise: denoise level, [-1, 10], default: 3
         :param scale: upscale ratio, 2 or 3 or 4
@@ -58,7 +58,7 @@ class SRMD:
         """
 
         # check arguments' validity
-        assert gpuid >= 0, "gpuid must >= 0"
+        assert gpuid >= -1, "gpuid must >= -1"
         assert noise in range(-1, 11), "noise must be [-1, 10]"
         assert scale in range(2, 5), "scale must be 2 or 3 or 4"
         assert tilesize == 0 or tilesize >= 32, "tilesize must >= 32 or be 0"

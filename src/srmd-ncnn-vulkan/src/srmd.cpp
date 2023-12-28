@@ -40,7 +40,7 @@ int SRMD::load(const std::wstring& parampath, const std::wstring& modelpath)
 int SRMD::load(const std::string& parampath, const std::string& modelpath)
 #endif
 {
-    net.opt.use_vulkan_compute = true;
+    net.opt.use_vulkan_compute = vkdev ? true : false;
     net.opt.use_fp16_packed = true;
     net.opt.use_fp16_storage = true;
     net.opt.use_fp16_arithmetic = false;

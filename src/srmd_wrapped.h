@@ -2,7 +2,7 @@
 #define SRMD_NCNN_VULKAN_SRMD_WRAPPED_H
 
 #include "srmd.h"
-#include "pybind11/include/pybind11/pybind11.h"
+#include "pybind11/pybind11.h"
 #include <locale>
 #include <codecvt>
 #include <utility>

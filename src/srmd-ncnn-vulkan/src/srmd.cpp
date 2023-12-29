@@ -677,9 +677,9 @@ int SRMD::process_cpu(const ncnn::Mat &inimage, ncnn::Mat &outimage) const {
                 for (int ti = 0; ti < 8; ti++) {
                     ncnn::Extractor ex = net.create_extractor();
 
-                    ex.input("in0", in_tile[ti]);
+                    ex.input("input", in_tile[ti]);
 
-                    ex.extract("out0", out_tile[ti]);
+                    ex.extract("output", out_tile[ti]);
                 }
 
                 ncnn::Mat out_alpha_tile;
@@ -810,9 +810,9 @@ int SRMD::process_cpu(const ncnn::Mat &inimage, ncnn::Mat &outimage) const {
                 {
                     ncnn::Extractor ex = net.create_extractor();
 
-                    ex.input("in0", in_tile);
+                    ex.input("input", in_tile);
 
-                    ex.extract("out0", out_tile);
+                    ex.extract("output", out_tile);
                 }
 
                 ncnn::Mat out_alpha_tile;

@@ -168,8 +168,10 @@ int SRMD::load(const std::string &parampath, const std::string &modelpath)
 
 int SRMD::process(const ncnn::Mat &inimage, ncnn::Mat &outimage) const {
     if (!vkdev) {
-        // cpu only
-        return process_cpu(inimage, outimage);
+        // cpu is not supported
+        fprintf(stderr, "SRMD: cpu is not supported\n");
+
+        return -1;
     }
 
 

@@ -26,8 +26,6 @@ public:
 
     int process(const ncnn::Mat &inimage, ncnn::Mat &outimage) const;
 
-    int process_cpu(const ncnn::Mat &inimage, ncnn::Mat &outimage) const;
-
 public:
     // srmd parameters
     int noise;

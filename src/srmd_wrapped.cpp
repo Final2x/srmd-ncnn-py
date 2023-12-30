@@ -24,6 +24,7 @@ SRMDWrapped::SRMDWrapped(int gpuid, bool tta_mode)
 
 int SRMDWrapped::get_tilesize() const {
     int tilesize = 0;
+    if (this->gpuid == -1) return 400;
 
     uint32_t heap_budget = ncnn::get_gpu_device(this->gpuid)->get_heap_budget();
 
